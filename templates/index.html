@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TJ in Go</title>
+	<style>
+		.counterDiv {
+		  text-align: left;
+		  font-size: 50px;
+		}
+	</style>
+</head>
+<body>
+
+	<h1>TJ in Go</h1>
+
+	<script type="text/javascript">
+	    var source = new EventSource('/events/');
+	    source.onmessage = function(e) {
+		document.getElementById('counterlocation').innerHTML = e.data ;
+
+	    };
+	</script>
+
+<form name="counterForm" class="counterDiv">  
+<div id="counterlocation"></div>  
+</form>  
+
+</body>
+</html>
