@@ -20,9 +20,11 @@ Run Docker container:
 Deploy in Kubernetes:
 
  > docker tag kbalashoff/tjcounter:latest <private_repo>/tjcounter:1.0
+
  > docker push <private_repo>/tjcounter:1.0
 
  > kubectl create deployment kba-tj --image=<private_repo>/tjcounter:1.0
+
  > kubectl expose deployment kba-tj --port=8181 --type=LoadBalancer --name=kba-tj-svc
 
  Then open up your browser to http://<exposed_ip>:8181
