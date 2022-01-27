@@ -1,7 +1,7 @@
 TJ in Go
 ========
 
-TJ Counter (Sever GO + Client HTML+JS + SSE)
+TJ Counter (Server GO+SSE + Client HTML+JS)
 
 Run this code like:
  > go run tjcounter.go
@@ -19,11 +19,11 @@ Run Docker container:
 
 Deploy in Kubernetes:
 
- > docker tag kbalashoff/tjcounter:latest <private repo>/tjcounter:1.0
- > docker push <private repo>/tjcounter:1.0
+ > docker tag kbalashoff/tjcounter:latest <private_repo>/tjcounter:1.0
+ > docker push <private_repo>/tjcounter:1.0
 
- > kubectl create deployment kba-tj --image=<private repo>/tjcounter:1.0
+ > kubectl create deployment kba-tj --image=<private_repo>/tjcounter:1.0
  > kubectl expose deployment kba-tj --port=8181 --type=LoadBalancer --name=kba-tj-svc
 
- Then open up your browser to http://<exposed ip>:8181
+ Then open up your browser to http://<exposed_ip>:8181
 
