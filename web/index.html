@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TJ Counter</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+      }
+
+      .card {
+        width: min(90vw, 420px);
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: 1.4rem;
+      }
+
+      .value {
+        font-size: 3rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 12px 0 20px;
+      }
+
+      .buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      button {
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .plus { background: #22c55e; color: #052e16; }
+      .minus { background: #f59e0b; color: #451a03; }
+      .reset { background: #f43f5e; color: #4c0519; }
+
+      .status {
+        margin-top: 12px;
+        color: #94a3b8;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>TJ Counter</h1>
+      <div id="counter" class="value">0</div>
+      <div class="buttons">
+        <button class="minus" data-action="decrement">-1</button>
+        <button class="reset" data-action="reset">Reset</button>
+        <button class="plus" data-action="increment">+1</button>
+      </div>
+      <div id="status" class="status">Connecting…</div>
+    </main>
+
+    <script>
+      const counterEl = document.getElementById('counter');
+      const statusEl = document.getElementById('status');
+
+      function setValue(v) {
+        counterEl.textContent = String(v);
+      }
+
+      async function loadInitialState() {
+        const res = await fetch('/api/state');
+        const data = await res.json();
+        setValue(data.value);
+      }
+
+      async function action(name) {
+        const res = await fetch(`/api/${name}`, { method: 'POST' });
+        const data = await res.json();
+        setValue(data.value);
+      }
+
+      document.querySelectorAll('button[data-action]').forEach((btn) => {
+        btn.addEventListener('click', () => action(btn.dataset.action));
+      });
+
+      function connectEvents() {
+        const es = new EventSource('/events');
+        es.addEventListener('open', () => {
+          statusEl.textContent = 'Live updates connected';
+        });
+        es.addEventListener('value', (event) => {
+          setValue(Number(event.data));
+        });
+        es.addEventListener('error', () => {
+          statusEl.textContent = 'Disconnected. Retrying…';
+        });
+      }
+
+      loadInitialState().catch(() => {
+        statusEl.textContent = 'Failed to load initial state';
+      });
+      connectEvents();
+    </script>
+  </body>
+</html>
